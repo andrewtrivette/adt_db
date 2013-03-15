@@ -32,6 +32,12 @@ class Database {
 	} // end __call
 	
 	
+	public function prepare($query) {
+		$db = $this->db;
+		$this->command = 'find';
+		$query = $db->prepare( $query );	
+	}
+	
 	public function query() {
 		
 		$default_query = array(
@@ -109,7 +115,7 @@ class Database {
 		$query = $this->query;
 		$success = $query->execute();
 		
-		if ( $this->command == 'find' AND $success == true ) {	
+		if ( $this->command == 'find' OR $this->command == '' AND $success == true ) {	
 			if ( $format == 'array' ) {
 				return $query->fetchAll();
 			} elseif ( $format == 'object' ) {
