@@ -8,6 +8,8 @@ class Database {
 	public $values;
 	public $command;
 	public $table;
+	public $result;
+	public $index;
 
 	public function __construct($c) {
 		
@@ -109,20 +111,71 @@ class Database {
 		$this->table = $table;
 		return $this;	
 	} // end setTable
+	
+	
+	public function first() {
+		
+		$results = (array) $this->result;
+		$this->index = 1;
+		return $results[0];
+		
+	}
+	
+	
+	public function record($index) {
+		
+		$results = (array) $this->result;
+		$this->index++;
+		return $results[$index];
+		
+	}
+	
+	
+	public function next() {
+		
+		$results = (array) $this->result;
+		$index = $this->index;
+		$this->index++;
+		return $results[$index];
+		
+	}
+	
+	
+	public function prev() {
+		
+		$results = (array) $this->result;
+		$this->index--;
+		$index = $this->index;
+		$this->index++;
+		return $results[$index];
+		
+	}
+	
+	
+	public function last() {
+		
+		$results = (array) $this->result;
+		$record = array_pop($results);
+		return $record;
+		
+	}
+		
 		
 	public function run( $format = 'array' ) { 
 	
 		$query = $this->query;
 		$success = $query->execute();
 		
-		if ( $this->command == 'find' OR $this->command == '' AND $success == true ) {	
+		if ( $this->command == 'find' AND $success == true ) {	
 			if ( $format == 'array' ) {
-				return $query->fetchAll();
+				$result = $query->fetchAll();
 			} elseif ( $format == 'object' ) {
-				return $query->fetchAll( PDO::FETCH_OBJ );
+				$result = $query->fetchAll( PDO::FETCH_OBJ );
 			} elseif ( $format == 'json' ) {
-				return json_encode( $query->fetchAll() );
+				$result = json_encode( $query->fetchAll() );
 			}
+			$this->result = $result;
+			return $result;
 		} else {
 			return $success;
 		}

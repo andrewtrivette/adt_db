@@ -14,10 +14,8 @@ $query = array(
 );
 
 $result = $db->find($query)->run();
-
-foreach($result as $row) {
-	print_r($row);
-}
+$record = $db->record(1);
+print_r($db->prev());
 /*
 $result = $db->find($query)->delete()->run();
 
